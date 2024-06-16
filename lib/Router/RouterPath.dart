@@ -3,5 +3,7 @@ class Routerpath{
   static const initialRoute=homepath;
   static const homepath="/";
   static const signIn="/signin";
+  static const signup ="/signup";
+  static const forgetpass="/forgetpass";
 
 }

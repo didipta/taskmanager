@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../Router/RouterPath.dart';
 import '../../Style/Colors.dart';
 import '../../widgets/background_widget.dart';
 
@@ -85,15 +86,15 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapNextButton() {
-
+    Navigator.pushNamed(context, Routerpath.homepath);
   }
 
   void _onTapSignUpButton() {
-
+   Navigator.pushNamed(context, Routerpath.signup);
   }
 
   void _onTapForgotPasswordButton() {
-
+  Navigator.pushNamed(context, Routerpath.forgetpass);
   }
 
   @override

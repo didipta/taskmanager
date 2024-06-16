@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taskmanager/Ui/screen/reset_password_screen.dart';
+import 'package:taskmanager/Ui/screen/sign_up_screen.dart';
 import 'package:taskmanager/Ui/screen/splash_screen.dart';
 
 import '../Ui/screen/sign_in_screen.dart';
@@ -13,6 +15,12 @@ MaterialPageRoute? materialPageRoute(RouteSettings settings){
       break;
     case Routerpath.signIn:
       widget=SignInScreen();
+      break;
+    case Routerpath.signup:
+      widget=SignUpScreen();
+      break;
+    case Routerpath.forgetpass:
+      widget=ResetPasswordScreen();
       break;
 
 
