@@ -20,10 +20,11 @@ class NetworkInterceptor {
       debugPrint('Request Body: $body');
 
       final uri = Uri.parse(url);
-      final headers = {
-        'Content-type': 'Application/json',
-        'Accept':'application/json',
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'token': AuthController.accessToken,
+
       };
 
       http.Response response;

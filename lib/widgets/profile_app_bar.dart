@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:taskmanager/Router/RouterPath.dart';
 
 import '../Style/Colors.dart';
+
+import '../Ui/controllers/auth_controller.dart';
 import '../Ui/screen/update_profile_screen.dart';
 
 
@@ -32,15 +34,15 @@ AppBar profileAppBar(context, [bool fromUpdateProfile = false]) {
           ),
         );
       },
-      child: const Column(
+      child:  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Dummy name',
+            AuthController.userData?.fullName ?? '',
             style: TextStyle(fontSize: 16, color: Colors.white),
           ),
           Text(
-            'email@gmail.com',
+            AuthController.userData?.email ?? '',
             style: TextStyle(
                 fontSize: 12, color: Colors.white, fontWeight: FontWeight.w500),
           ),

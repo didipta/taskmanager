@@ -4,7 +4,14 @@ import 'package:flutter/material.dart';
 import '../../Router/RouterPath.dart';
 import '../../Style/Colors.dart';
 import '../../Style/app_constants.dart';
+import '../../data/models/login_model.dart';
+import '../../data/models/network_response.dart';
+import '../../data/network_caller/NetworkCaller.dart';
+import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
+import '../../widgets/snack_bar_message.dart';
+import '../controllers/auth_controller.dart';
+import 'main_bottom_nav_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -117,9 +124,51 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapNextButton() {
-    Navigator.pushNamed(context, Routerpath.homepath);
+    if (_formKey.currentState!.validate()) {
+      _signUp();
+    }
   }
 
+  Future<void> _signUp() async {
+    _signInApiInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    Map<String, dynamic> requestData = {
+      'email': _emailTEController.text.trim(),
+      'password': _passwordTEController.text,
+    };
+
+    final NetworkResponse response =
+    await NetworkCaller.postRequest(Urls.login, body: requestData);
+    _signInApiInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    if (response.isSuccess) {
+      LoginModel loginModel = LoginModel.fromJson(response.responseData);
+      await AuthController.saveUserAccessToken(loginModel.token!);
+      await AuthController.saveUserData(loginModel.userModel!);
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainBottomNavScreen(),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage ??
+              'Email/password is not correct. Try again',
+        );
+      }
+    }
+  }
   void _onTapSignUpButton() {
     Navigator.pushNamed(context, Routerpath.signup);
   }
