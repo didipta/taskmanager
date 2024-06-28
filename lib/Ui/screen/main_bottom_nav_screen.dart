@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../Style/Colors.dart';
+import '../../data/utilities/urls.dart';
 import '../../widgets/profile_app_bar.dart';
 import 'cancelled_task_screen.dart';
 import 'completed_task_screen.dart';
@@ -18,10 +19,19 @@ class MainBottomNavScreen extends StatefulWidget {
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = const [
-    NewTaskScreen(),
-    CompletedTaskScreen(),
-    InProgressTaskScreen(),
-    CancelledTaskScreen()
+    NewTaskScreen(
+      urls: Urls.newTasks,
+    ),
+    NewTaskScreen(
+      urls: Urls.completedTasks,
+    ),
+    NewTaskScreen(
+      urls: Urls.ProgressTasks,
+    ),
+    NewTaskScreen(
+      urls: Urls.CancelledTasks,
+    ),
+
   ];
 
   @override
@@ -33,6 +43,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
         currentIndex: _selectedIndex,
         onTap: (index) {
           _selectedIndex = index;
+          Navigator.pop(context);
           if (mounted) {
             setState(() {});
           }

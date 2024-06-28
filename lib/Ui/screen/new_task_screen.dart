@@ -15,7 +15,8 @@ import '../../widgets/task_summary_card.dart';
 import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  const NewTaskScreen({super.key});
+  final urls;
+  const NewTaskScreen({super.key, this.urls});
 
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
@@ -30,8 +31,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   void initState() {
     super.initState();
-    _getTaskCountByStatus();
-    _getNewTasks();
+    setState(() {
+      _getTaskCountByStatus();
+      _getNewTasks();    });
   }
 
   @override
@@ -114,7 +116,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     if (mounted) {
       setState(() {});
     }
-    NetworkResponse response = await NetworkCaller.getRequest(Urls.newTasks);
+    NetworkResponse response = await NetworkCaller.getRequest(widget.urls!);
     if (response.isSuccess) {
       TaskListWrapperModel taskListWrapperModel =
       TaskListWrapperModel.fromJson(response.responseData);

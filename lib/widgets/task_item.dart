@@ -93,6 +93,11 @@ class _TaskItemState extends State<TaskItem> {
                             return PopupMenuItem<String>(
                               value: value,
                               child: ListTile(
+                                onTap: (){
+                                  _updatestatus(value);
+                                  Navigator.pop(context);
+
+                                },
                                 title: Text(value),
                                 trailing: dropdownValue == value
                                     ? const Icon(Icons.done)
@@ -128,6 +133,33 @@ class _TaskItemState extends State<TaskItem> {
         showSnackBarMessage(
           context,
           response.errorMessage ?? 'Get task count by status failed! Try again',
+        );
+      }
+    }
+    _deleteInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+Future<void> _updatestatus(String status) async {
+    if (mounted) {
+      setState(() {});
+    }
+    NetworkResponse response =
+    await NetworkCaller.getRequest(Urls.updateTaskStatus(widget.taskModel.sId!,status!));
+
+    if (response.isSuccess) {
+      widget.onUpdateTask();
+      showSnackBarMessage(
+        context,
+        response.errorMessage ?? 'Status update',
+      );
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage ?? 'failes',
         );
       }
     }
