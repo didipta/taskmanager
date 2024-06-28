@@ -5,7 +5,7 @@ import 'Router/RouterGenerator.dart';
 import 'Router/RouterPath.dart';
 import 'Style/ThemeData.dart';
 
-class Taskmanager extends StatefulWidget {
+class Taskmanager extends StatelessWidget {
   const Taskmanager({Key? key}) : super(key: key);
   static GlobalKey<NavigatorState> navigatorKey=GlobalKey<NavigatorState>();
 

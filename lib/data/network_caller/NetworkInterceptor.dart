@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../../Ui/controllers/auth_controller.dart';
 import '../../Ui/screen/sign_in_screen.dart';
 import '../../app.dart';
 import '../models/network_response.dart';
-import 'package:http/http.dart' as http;
 
 class NetworkInterceptor {
   static Future<NetworkResponse> request(
@@ -21,7 +21,8 @@ class NetworkInterceptor {
 
       final uri = Uri.parse(url);
       final headers = {
-        'Content-type': 'application/json',
+        'Content-type': 'Application/json',
+        'Accept':'application/json',
         'token': AuthController.accessToken,
       };
 
@@ -44,6 +45,11 @@ class NetworkInterceptor {
 
       return _handleResponse(response);
     } catch (e) {
+      debugPrint('Request Error: $e');
+      if (e is http.ClientException) {
+        // Handle specific ClientException error
+        debugPrint('ClientException: ${e.message}');
+      }
       return NetworkResponse(
         statusCode: -1,
         isSuccess: false,

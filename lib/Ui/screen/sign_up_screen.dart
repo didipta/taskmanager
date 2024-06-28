@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:taskmanager/data/network_caller/NetworkCaller.dart';
 
 import '../../Style/Colors.dart';
 import '../../Style/app_constants.dart';
 import '../../data/models/network_response.dart';
-import '../../data/network_caller/network_caller.dart';
 import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
 import '../../widgets/snack_bar_message.dart';
@@ -192,6 +192,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (mounted) {
       setState(() {});
     }
+    debugPrint('Request URL: $response');
+    print(response.isSuccess);
     if (response.isSuccess) {
       _clearTextFields();
       if (mounted) {
