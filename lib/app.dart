@@ -5,8 +5,9 @@ import 'Router/RouterGenerator.dart';
 import 'Router/RouterPath.dart';
 import 'Style/ThemeData.dart';
 
-class Taskmanager extends StatelessWidget {
+class Taskmanager extends StatefulWidget {
   const Taskmanager({Key? key}) : super(key: key);
+  static GlobalKey<NavigatorState> navigatorKey=GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
