@@ -31,7 +31,6 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
     NewTaskScreen(
       urls: Urls.CancelledTasks,
     ),
-
   ];
 
   @override
@@ -42,23 +41,21 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          _selectedIndex = index;
-          Navigator.pop(context);
-          if (mounted) {
-            setState(() {});
-          }
+          setState(() {
+            _selectedIndex = index;
+          });
         },
         selectedItemColor: AppColors.themeColor,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.abc), label: 'New Task'),
+          BottomNavigationBarItem(icon: Icon(Icons.task), label: 'New Task'),
           BottomNavigationBarItem(icon: Icon(Icons.done), label: 'Completed'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.ac_unit), label: 'In Progress'),
-          BottomNavigationBarItem(icon: Icon(Icons.close), label: 'Cancelled'),
+          BottomNavigationBarItem(icon: Icon(Icons.incomplete_circle), label: 'In Progress'),
+          BottomNavigationBarItem(icon: Icon(Icons.cancel), label: 'Cancelled'),
         ],
       ),
     );
   }
 }
+

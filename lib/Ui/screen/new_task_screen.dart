@@ -15,8 +15,8 @@ import '../../widgets/task_summary_card.dart';
 import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
-  final urls;
-  const NewTaskScreen({super.key, this.urls});
+  final String urls;
+  const NewTaskScreen({super.key, required this.urls});
 
   @override
   State<NewTaskScreen> createState() => _NewTaskScreenState();
@@ -31,9 +31,20 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _getTaskCountByStatus();
-      _getNewTasks();    });
+    _fetchTasks();
+  }
+
+  @override
+  void didUpdateWidget(covariant NewTaskScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.urls != oldWidget.urls) {
+      _fetchTasks();
+    }
+  }
+
+  void _fetchTasks() {
+    _getTaskCountByStatus();
+    _getNewTasks();
   }
 
   @override
@@ -48,21 +59,17 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  _getNewTasks();
-                  _getTaskCountByStatus();
+                  _fetchTasks();
                 },
                 child: Visibility(
-                  visible: _getNewTasksInProgress == false,
+                  visible: !_getNewTasksInProgress,
                   replacement: const CenteredProgressIndicator(),
                   child: ListView.builder(
                     itemCount: newTaskList.length,
                     itemBuilder: (context, index) {
                       return TaskItem(
                         taskModel: newTaskList[index],
-                        onUpdateTask: () {
-                          _getNewTasks();
-                          _getTaskCountByStatus();
-                        },
+                        onUpdateTask: _fetchTasks,
                       );
                     },
                   ),
@@ -92,7 +99,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   Widget _buildSummarySection() {
     return Visibility(
-      visible: _getTaskCountByStatusInProgress == false,
+      visible: !_getTaskCountByStatusInProgress,
       replacement: const SizedBox(
         height: 100,
         child: CenteredProgressIndicator(),
@@ -112,50 +119,52 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   }
 
   Future<void> _getNewTasks() async {
-    _getNewTasksInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-    NetworkResponse response = await NetworkCaller.getRequest(widget.urls!);
+    setState(() {
+      _getNewTasksInProgress = true;
+    });
+    NetworkResponse response = await NetworkCaller.getRequest(widget.urls);
     if (response.isSuccess) {
       TaskListWrapperModel taskListWrapperModel =
       TaskListWrapperModel.fromJson(response.responseData);
-      newTaskList = taskListWrapperModel.taskList ?? [];
+      setState(() {
+        newTaskList = taskListWrapperModel.taskList ?? [];
+        _getNewTasksInProgress = false;
+      });
     } else {
+      setState(() {
+        _getNewTasksInProgress = false;
+      });
       if (mounted) {
         showSnackBarMessage(
             context, response.errorMessage ?? 'Get new task failed! Try again');
       }
     }
-    _getNewTasksInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future<void> _getTaskCountByStatus() async {
-    _getTaskCountByStatusInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
+    setState(() {
+      _getTaskCountByStatusInProgress = true;
+    });
     NetworkResponse response =
     await NetworkCaller.getRequest(Urls.taskStatusCount);
     if (response.isSuccess) {
       TaskCountByStatusWrapperModel taskCountByStatusWrapperModel =
       TaskCountByStatusWrapperModel.fromJson(response.responseData);
-      taskCountByStatusList =
-          taskCountByStatusWrapperModel.taskCountByStatusList ?? [];
+      setState(() {
+        taskCountByStatusList =
+            taskCountByStatusWrapperModel.taskCountByStatusList ?? [];
+        _getTaskCountByStatusInProgress = false;
+      });
     } else {
+      setState(() {
+        _getTaskCountByStatusInProgress = false;
+      });
       if (mounted) {
         showSnackBarMessage(
           context,
           response.errorMessage ?? 'Get task count by status failed! Try again',
         );
       }
-    }
-    _getTaskCountByStatusInProgress = false;
-    if (mounted) {
-      setState(() {});
     }
   }
 }
