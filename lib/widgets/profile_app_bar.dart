@@ -4,6 +4,7 @@ import 'package:taskmanager/Router/RouterPath.dart';
 import '../Style/Colors.dart';
 
 import '../Ui/controllers/auth_controller.dart';
+import '../Ui/screen/sign_in_screen.dart';
 import '../Ui/screen/update_profile_screen.dart';
 
 
@@ -49,6 +50,18 @@ AppBar profileAppBar(context, [bool fromUpdateProfile = false]) {
         ],
       ),
     ),
-    actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.logout))],
+    actions: [
+      IconButton(
+        onPressed: () async {
+          await AuthController.clearAllData();
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const SignInScreen()),
+                (route) => false,
+          );
+        },
+        icon: const Icon(Icons.logout),
+      )
+    ],
   );
 }
