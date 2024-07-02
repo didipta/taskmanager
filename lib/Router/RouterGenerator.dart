@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskmanager/Ui/screen/add_new_task_screen.dart';
+import 'package:taskmanager/Ui/screen/email_verification_screen.dart';
 import 'package:taskmanager/Ui/screen/main_bottom_nav_screen.dart';
 import 'package:taskmanager/Ui/screen/reset_password_screen.dart';
 import 'package:taskmanager/Ui/screen/sign_up_screen.dart';
@@ -23,7 +24,7 @@ MaterialPageRoute? materialPageRoute(RouteSettings settings){
       widget=SignUpScreen();
       break;
     case Routerpath.forgetpass:
-      widget=ResetPasswordScreen();
+      widget=EmailVerificationScreen();
       break;
     case Routerpath.homepath:
       widget=MainBottomNavScreen();

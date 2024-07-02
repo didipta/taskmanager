@@ -5,11 +5,16 @@ import 'package:taskmanager/Ui/screen/reset_password_screen.dart';
 import 'package:taskmanager/Ui/screen/sign_in_screen.dart';
 
 import '../../Style/Colors.dart';
+import '../../data/models/network_response.dart';
+import '../../data/network_caller/NetworkCaller.dart';
+import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
+import '../../widgets/snack_bar_message.dart';
 
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
+  final String email;
+  PinVerificationScreen({super.key, required this.email});
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
@@ -102,6 +107,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
   }
 
   void _onTapSignInButton() {
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const SignInScreen()),
@@ -109,11 +115,29 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     );
   }
 
-  void _onTapVerifyOtpButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
-    );
+  void _onTapVerifyOtpButton() async{
+    NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.RecoverVerifyOTP(_pinTEController.text.trim()!,widget.email));
+
+    if (response.isSuccess) {
+      showSnackBarMessage(
+        context,
+        'Pin Verificat',
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+      );
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Get task count by status failed! Try again',
+        );
+      }
+    }
+
   }
 
   @override

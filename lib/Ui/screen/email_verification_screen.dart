@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:taskmanager/Ui/screen/pin_verification_screen.dart';
 
 import '../../Style/Colors.dart';
+import '../../data/models/network_response.dart';
+import '../../data/network_caller/NetworkCaller.dart';
+import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
+import '../../widgets/snack_bar_message.dart';
 
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -82,13 +86,33 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     Navigator.pop(context);
   }
 
-  void _onTapConfirmButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const PinVerificationScreen(),
-      ),
-    );
+  void _onTapConfirmButton() async {
+    NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.emailvarification(_emailTEController.text.trim()!));
+
+    if (response.isSuccess) {
+      showSnackBarMessage(
+        context,
+         'Please Check Your Email',
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PinVerificationScreen(
+            email:_emailTEController.text.trim() ,
+          ),
+        ),
+      );
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+          context,
+          response.errorMessage ?? 'Get task count by status failed! Try again',
+        );
+      }
+    }
+
   }
 
   @override
