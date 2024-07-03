@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:taskmanager/Ui/screen/sign_in_screen.dart';
 
 import '../../Style/Colors.dart';
+import '../../data/models/network_response.dart';
+import '../../data/network_caller/NetworkCaller.dart';
+import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
+import '../../widgets/snack_bar_message.dart';
 
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String email;
+  final String otp;
+  ResetPasswordScreen({super.key, required this.email, required this.otp});
 
   @override
   State<ResetPasswordScreen> createState() =>
@@ -93,12 +99,46 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  void _onTapConfirmButton() {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInScreen()),
-          (route) => false,
-    );
+  void _onTapConfirmButton() async {
+   if(_passwordTEController.text.trim()==_confirmPasswordTEController.text.trim()){
+     Map<String, dynamic> requestData = {
+       'email': widget.email,
+       "OTP":widget.otp,
+       'password': _confirmPasswordTEController.text.trim(),
+     };
+
+     NetworkResponse response =
+     await NetworkCaller.postRequest(Urls.RecoverResetPass,body:requestData);
+
+
+     if (response.isSuccess) {
+       if(response.responseData["status"]=="fail"){
+         showSnackBarMessage(context,response.responseData["data"]);
+       }
+       else{
+
+
+         Navigator.push(
+           context,
+           MaterialPageRoute(builder: (context) => SignInScreen()),
+         );
+       }
+
+
+
+     } else {
+       if (mounted) {
+         showSnackBarMessage(
+           context,
+           response.errorMessage ?? 'Get task count by status failed! Try again',
+         );
+       }
+     }
+   }
+   else{
+     showSnackBarMessage(context,"Password not match");
+   }
+
   }
 
   @override

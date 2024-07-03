@@ -120,15 +120,21 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
         await NetworkCaller.getRequest(Urls.RecoverVerifyOTP(_pinTEController.text.trim()!,widget.email));
 
     if (response.isSuccess) {
-      showSnackBarMessage(
-        context,
-        'Pin Verificat',
-      );
+      if(response.responseData["status"]=="fail"){
+        showSnackBarMessage(context,response.responseData["data"]);
+      }
+      else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ResetPasswordScreen(
+            email:widget.email ,
+            otp:_pinTEController.text.trim(),
+          )),
+        );
+      }
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
-      );
+
+
     } else {
       if (mounted) {
         showSnackBarMessage(

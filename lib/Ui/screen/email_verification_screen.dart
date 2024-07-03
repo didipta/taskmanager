@@ -90,20 +90,27 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     NetworkResponse response =
         await NetworkCaller.getRequest(Urls.emailvarification(_emailTEController.text.trim()!));
 
-    if (response.isSuccess) {
-      showSnackBarMessage(
-        context,
-         'Please Check Your Email',
-      );
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PinVerificationScreen(
-            email:_emailTEController.text.trim() ,
+    if (response.isSuccess) {
+
+
+      if(response.responseData["status"]=="fail"){
+        showSnackBarMessage(context,response.responseData["data"]);
+      }
+      else{
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PinVerificationScreen(
+              email:_emailTEController.text.trim() ,
+            ),
           ),
-        ),
-      );
+        );
+      }
+
+
+
     } else {
       if (mounted) {
         showSnackBarMessage(

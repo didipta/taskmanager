@@ -10,6 +10,7 @@ class Urls {
   static const String CancelledTasks = '$_baseUrl/listTaskByStatus/Cancelled';
   static const String taskStatusCount = '$_baseUrl/taskStatusCount';
   static String updateProfile = '$_baseUrl/profileUpdate';
+  static String RecoverResetPass = '$_baseUrl/RecoverResetPass';
 
   static String deleteTask(String id) => '$_baseUrl/deleteTask/$id';
   static String updateTaskStatus(String id,String status) => '$_baseUrl/updateTaskStatus/$id/$status';
