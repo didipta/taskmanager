@@ -40,7 +40,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     if (widget.urls != oldWidget.urls) {
       _fetchTasks();
     }
-  }
+  } 
 
   void _fetchTasks() {
     _getTaskCountByStatus();
