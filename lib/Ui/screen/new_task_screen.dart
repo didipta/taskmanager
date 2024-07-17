@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:taskmanager/Ui/controllers/new_task_controller.dart';
 import '../../Style/Colors.dart';
 import '../../data/models/network_response.dart';
 import '../../data/models/task_by_status_count_wrapper_model.dart';
@@ -12,10 +13,12 @@ import '../../widgets/centered_progress_indicator.dart';
 import '../../widgets/snack_bar_message.dart';
 import '../../widgets/task_item.dart';
 import '../../widgets/task_summary_card.dart';
+
 import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
   final String urls;
+
   const NewTaskScreen({super.key, required this.urls});
 
   @override
@@ -44,7 +47,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   void _fetchTasks() {
     _getTaskCountByStatus();
-    _getNewTasks();
+    Get.find<NewTaskController>().getNewTasks(widget.urls);
   }
 
   @override
@@ -61,18 +64,34 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 onRefresh: () async {
                   _fetchTasks();
                 },
-                child: Visibility(
-                  visible: !_getNewTasksInProgress,
-                  replacement: const CenteredProgressIndicator(),
-                  child: ListView.builder(
-                    itemCount: newTaskList.length,
-                    itemBuilder: (context, index) {
-                      return TaskItem(
-                        taskModel: newTaskList[index],
-                        onUpdateTask: _fetchTasks,
-                      );
-                    },
-                  ),
+                // child: Visibility(
+                //   visible: !_getNewTasksInProgress,
+                //   replacement: const CenteredProgressIndicator(),
+                //   child: ListView.builder(
+                //     itemCount: newTaskList.length,
+                //     itemBuilder: (context, index) {
+                //       return TaskItem(
+                //         taskModel: newTaskList[index],
+                //         onUpdateTask: _fetchTasks,
+                //       );
+                //     },
+                //   ),
+                // ),
+                child: GetBuilder<NewTaskController>(
+                  builder: (newTaskController) {
+                    return Visibility(
+                      visible: newTaskController.getNewTasksInProgress == false,
+                      replacement: const CenteredProgressIndicator(),
+                      child: ListView.builder(
+                        itemCount: newTaskController.newTaskList.length,
+                        itemBuilder: (context, index) {
+                          return TaskItem(
+                              taskModel: newTaskController.newTaskList[index],
+                              onUpdateTask: _fetchTasks);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -125,7 +144,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     NetworkResponse response = await NetworkCaller.getRequest(widget.urls);
     if (response.isSuccess) {
       TaskListWrapperModel taskListWrapperModel =
-      TaskListWrapperModel.fromJson(response.responseData);
+          TaskListWrapperModel.fromJson(response.responseData);
       setState(() {
         newTaskList = taskListWrapperModel.taskList ?? [];
         _getNewTasksInProgress = false;
@@ -146,10 +165,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       _getTaskCountByStatusInProgress = true;
     });
     NetworkResponse response =
-    await NetworkCaller.getRequest(Urls.taskStatusCount);
+        await NetworkCaller.getRequest(Urls.taskStatusCount);
     if (response.isSuccess) {
       TaskCountByStatusWrapperModel taskCountByStatusWrapperModel =
-      TaskCountByStatusWrapperModel.fromJson(response.responseData);
+          TaskCountByStatusWrapperModel.fromJson(response.responseData);
       setState(() {
         taskCountByStatusList =
             taskCountByStatusWrapperModel.taskCountByStatusList ?? [];

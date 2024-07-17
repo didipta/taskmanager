@@ -16,8 +16,7 @@ class NetworkInterceptor {
         Map<String, dynamic>? body,
       }) async {
     try {
-      debugPrint('Request URL: $url');
-      debugPrint('Request Body: $body');
+
 
       final uri = Uri.parse(url);
       var headers = {
