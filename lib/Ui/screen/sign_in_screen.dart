@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:taskmanager/Ui/controllers/sign_in_controller.dart';
 
 import '../../Router/RouterPath.dart';
 import '../../Style/Colors.dart';
@@ -123,9 +126,27 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _onTapNextButton() {
+  void _onTapNextButton() async {
     if (_formKey.currentState!.validate()) {
-      _signUp();
+      // _signUp();
+      final SignInController signInController=Get.find<SignInController>();
+      final bool result = await signInController.signIn(
+        _emailTEController.text.trim(),
+        _passwordTEController.text
+      );
+      if(result){
+        Get.offAll(()=>const MainBottomNavScreen());
+
+      }else{
+        if(mounted){
+          showSnackBarMessage(
+            context,
+            signInController.errorMessage ??
+                'Email/password is not correct. Try again',
+          );
+        }
+      }
+
     }
   }
 

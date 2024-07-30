@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:taskmanager/data/network_caller/NetworkCaller.dart';
 
 import '../../Style/Colors.dart';
@@ -8,7 +10,7 @@ import '../../data/models/network_response.dart';
 import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
 import '../../widgets/snack_bar_message.dart';
-
+import '../controllers/Sign_up_controller.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -131,9 +133,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: CircularProgressIndicator(),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            _registerUser();
+
+                            // _registerUser();
+                            final SignUpController singupcontroller =
+                                Get.find<SignUpController>();
+                            final bool result = await singupcontroller.signUp(
+                              _emailTEController.text.trim(),
+                              _firstNameTEController.text.trim(),
+                              _lastNameTEController.text.trim(),
+                              _mobileTEController.text.trim(),
+                              _passwordTEController.text,
+                            );
+                            if (result) {
+                              _clearTextFields();
+                              if (mounted) {
+                                showSnackBarMessage(
+                                    context, 'Registration success');
+                              }
+                            } else {
+                              if (mounted) {
+                                showSnackBarMessage(
+                                  context,
+                                  singupcontroller.errorMessage ??
+                                      'Registration failed! Try again.',
+                                );
+                              }
+                            }
                           }
                         },
                         child: const Icon(Icons.arrow_circle_right_outlined),
