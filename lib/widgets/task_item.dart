@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:taskmanager/widgets/snack_bar_message.dart';
 
+import '../Ui/controllers/task_controller.dart';
 import '../data/models/network_response.dart';
 import '../data/models/task_model.dart';
 import '../data/network_caller/NetworkCaller.dart';
 import '../data/utilities/urls.dart';
 import 'centered_progress_indicator.dart';
-
 
 class TaskItem extends StatefulWidget {
   const TaskItem({
@@ -26,12 +28,7 @@ class _TaskItemState extends State<TaskItem> {
   bool _deleteInProgress = false;
   bool _editInProgress = false;
   String dropdownValue = '';
-  List<String> statusList = [
-    'New',
-    'Progress',
-    'Completed',
-    'Cancelled'
-  ];
+  List<String> statusList = ['New', 'Progress', 'Completed', 'Cancelled'];
 
   @override
   void initState() {
@@ -63,7 +60,7 @@ class _TaskItemState extends State<TaskItem> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16)),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 ),
                 ButtonBar(
                   children: [
@@ -93,10 +90,27 @@ class _TaskItemState extends State<TaskItem> {
                             return PopupMenuItem<String>(
                               value: value,
                               child: ListTile(
-                                onTap: (){
-                                  _updatestatus(value);
-                                  Navigator.pop(context);
-
+                                onTap: () async {
+                                  final TaskController updatestatus =
+                                      Get.find<TaskController>();
+                                  final bool result =
+                                      await updatestatus.updatestatus(
+                                          widget.taskModel.sId!, value);
+                                  if (result) {
+                                    widget.onUpdateTask();
+                                    Navigator.pop(context);
+                                    showSnackBarMessage(
+                                      context,
+                                      'Status update',
+                                    );
+                                  } else {
+                                    if (mounted) {
+                                      showSnackBarMessage(
+                                        context,
+                                        updatestatus.errorMessage ?? 'failes',
+                                      );
+                                    }
+                                  }
                                 },
                                 title: Text(value),
                                 trailing: dropdownValue == value
@@ -124,7 +138,7 @@ class _TaskItemState extends State<TaskItem> {
       setState(() {});
     }
     NetworkResponse response =
-    await NetworkCaller.getRequest(Urls.deleteTask(widget.taskModel.sId!));
+        await NetworkCaller.getRequest(Urls.deleteTask(widget.taskModel.sId!));
 
     if (response.isSuccess) {
       widget.onUpdateTask();
@@ -142,12 +156,12 @@ class _TaskItemState extends State<TaskItem> {
     }
   }
 
-Future<void> _updatestatus(String status) async {
+  Future<void> _updatestatus(String status) async {
     if (mounted) {
       setState(() {});
     }
-    NetworkResponse response =
-    await NetworkCaller.getRequest(Urls.updateTaskStatus(widget.taskModel.sId!,status!));
+    NetworkResponse response = await NetworkCaller.getRequest(
+        Urls.updateTaskStatus(widget.taskModel.sId!, status!));
 
     if (response.isSuccess) {
       widget.onUpdateTask();

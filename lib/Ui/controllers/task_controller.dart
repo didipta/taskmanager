@@ -67,4 +67,21 @@ class TaskController extends GetxController {
 
     return isSuccess;
   }
+
+  Future<bool> updatestatus(String id,String status) async {
+    bool isSuccess = false;
+
+    update();
+
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.updateTaskStatus(id!,status!));
+    if (response.isSuccess) {
+      isSuccess = true;
+    } else {
+      _errorMessage = response.errorMessage ?? 'update status fail';
+    }
+    update();
+
+    return isSuccess;
+  }
 }
