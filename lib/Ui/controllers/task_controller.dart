@@ -84,4 +84,20 @@ class TaskController extends GetxController {
 
     return isSuccess;
   }
+  Future<bool> deletetask(String id) async {
+    bool isSuccess = false;
+
+    update();
+
+    final NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.deleteTask(id));
+    if (response.isSuccess) {
+      isSuccess = true;
+    } else {
+      _errorMessage = response.errorMessage ?? 'update status fail';
+    }
+    update();
+
+    return isSuccess;
+  }
 }

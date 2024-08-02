@@ -68,8 +68,28 @@ class _TaskItemState extends State<TaskItem> {
                       visible: _deleteInProgress == false,
                       replacement: const CenteredProgressIndicator(),
                       child: IconButton(
-                        onPressed: () {
-                          _deleteTask();
+                        onPressed: ()  async {
+                          _deleteInProgress = true;
+                          final TaskController updatestatus =
+                          Get.find<TaskController>();
+                          final bool result =
+                          await updatestatus.deletetask(
+                              widget.taskModel.sId!);
+                          if (result) {
+                            widget.onUpdateTask();
+                            _deleteInProgress = false;
+                            showSnackBarMessage(
+                              context,
+                              'Status delete',
+                            );
+                          } else {
+                            if (mounted) {
+                              showSnackBarMessage(
+                                context,
+                                updatestatus.errorMessage ?? 'failes',
+                              );
+                            }
+                          }
                         },
                         icon: const Icon(Icons.delete),
                       ),
