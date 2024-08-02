@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:taskmanager/Ui/controllers/task_controller.dart';
+import 'package:taskmanager/Ui/screen/new_task_screen.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/network_caller/NetworkCaller.dart';
@@ -7,7 +11,7 @@ import '../../widgets/background_widget.dart';
 import '../../widgets/centered_progress_indicator.dart';
 import '../../widgets/profile_app_bar.dart';
 import '../../widgets/snack_bar_message.dart';
-
+import 'main_bottom_nav_screen.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -19,7 +23,7 @@ class AddNewTaskScreen extends StatefulWidget {
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
   final TextEditingController _descriptionTEController =
-  TextEditingController();
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _addNewTaskInProgress = false;
 
@@ -62,9 +66,24 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     visible: _addNewTaskInProgress == false,
                     replacement: const CenteredProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          _addNewTask();
+                          // _addNewTask();
+                          final TaskController addnewcontroller =
+                              Get.find<TaskController>();
+                          final bool result = await addnewcontroller.addNewtask(
+                              _descriptionTEController.text.trim(),
+                              _titleTEController.text.trim());
+                          if (result) {
+                            _clearTextFields();
+                            Get.offAll(
+                                () => MainBottomNavScreen());
+                          } else {
+                            if (mounted) {
+                              showSnackBarMessage(
+                                  context, addnewcontroller.errorMessage);
+                            }
+                          }
                         }
                       },
                       child: const Text('Add'),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:taskmanager/Ui/controllers/new_task_controller.dart';
 import '../../Style/Colors.dart';
 import '../../data/models/network_response.dart';
 import '../../data/models/task_by_status_count_wrapper_model.dart';
@@ -14,6 +13,7 @@ import '../../widgets/snack_bar_message.dart';
 import '../../widgets/task_item.dart';
 import '../../widgets/task_summary_card.dart';
 
+import '../controllers/task_controller.dart';
 import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
@@ -47,7 +47,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   void _fetchTasks() {
     _getTaskCountByStatus();
-    Get.find<NewTaskController>().getNewTasks(widget.urls);
+    Get.find<TaskController>().getNewTasks(widget.urls);
   }
 
   @override
@@ -77,7 +77,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 //     },
                 //   ),
                 // ),
-                child: GetBuilder<NewTaskController>(
+                child: GetBuilder<TaskController>(
                   builder: (newTaskController) {
                     return Visibility(
                       visible: newTaskController.getNewTasksInProgress == false,
