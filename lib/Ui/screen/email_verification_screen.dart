@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:taskmanager/Ui/screen/pin_verification_screen.dart';
 
 import '../../Style/Colors.dart';
@@ -8,6 +10,7 @@ import '../../data/network_caller/NetworkCaller.dart';
 import '../../data/utilities/urls.dart';
 import '../../widgets/background_widget.dart';
 import '../../widgets/snack_bar_message.dart';
+import '../controllers/sign_in_controller.dart';
 
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -49,7 +52,20 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: _onTapConfirmButton,
+                    onPressed: ()async{
+                      final SignInController signInController=Get.find<SignInController>();
+                      final bool result = await signInController.emailvarification(_emailTEController.text.trim()!,context);
+                      if(result){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PinVerificationScreen(
+                              email:_emailTEController.text.trim() ,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                     child: const Icon(Icons.arrow_circle_right_outlined),
                   ),
                   const SizedBox(height: 36),
@@ -99,14 +115,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       }
       else{
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PinVerificationScreen(
-              email:_emailTEController.text.trim() ,
-            ),
-          ),
-        );
+
       }
 
 

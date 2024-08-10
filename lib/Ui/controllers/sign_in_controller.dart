@@ -4,6 +4,7 @@ import '../../data/models/login_model.dart';
 import '../../data/models/network_response.dart';
 import '../../data/network_caller/NetworkCaller.dart';
 import '../../data/utilities/urls.dart';
+import '../../widgets/snack_bar_message.dart';
 import 'auth_controller.dart';
 
 
@@ -38,6 +39,28 @@ class SignInController extends GetxController {
 
     _signInApiInProgress = false;
     update();
+
+    return isSuccess;
+  }
+
+  Future<bool> emailvarification(String email,context) async {
+    bool isSuccess = false;
+
+
+    final NetworkResponse response =
+    await NetworkCaller.getRequest(Urls.emailvarification(email));
+    if (response.isSuccess) {
+      print(response.responseData["status"]);
+
+      if(response.responseData["status"]=="fail"){
+        showSnackBarMessage(context,response.responseData["data"]);
+      }
+      else{
+        isSuccess = true;
+      }
+    } else {
+      _errorMessage = response.errorMessage ?? " ";
+    }
 
     return isSuccess;
   }
